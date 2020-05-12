@@ -54,7 +54,7 @@ class MagicDB:
 		if time in self.timeseries[symbol].index:
 			return self.timeseries[symbol].at[time, type_]
 		else:
-			return '{} data for symbol {} at time {} ET N/A'.format(type_, symbol, self.get_ny_datetime(time))
+			return '{} data for symbol {} at time {} UTC N/A'.format(type_, symbol, time)
 			
 
 	def get_most_recent_price(self, symbol, time):

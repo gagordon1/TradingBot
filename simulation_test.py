@@ -1,19 +1,18 @@
-from simulation import simulate
 from DataAnalysis import DataAnalysis as DA
 from datetime import datetime as dt
 from DatabaseAPI.PolygonDB import PolygonDB as pDB
-from Algorithms.moving_avgs1 import init, strat
-
 import HelperFunctions as HF
 import random
 dA = DA()
 
 
 def moving_avgs1(start, end, sym):
+	from Algorithms.moving_avgs1 import init, strat
+	from Simulators.StockSim import context, simulate
 	timestep = '1m'
 	cash = 10
-	con = simulate(init, strat, start, end, timestep, cash, positions = {}, market = 'NYSE', symbol = sym, verbose = False)
-	return con.total_asset_value() - cash
+	con = simulate(init, strat, start, end, timestep, cash, symbol = sym, verbose = False)
+	return con
 
 def snapshot():
 	resp = pDB().snapshot()
@@ -25,6 +24,13 @@ def snapshot():
 			targets.append(name)
 	return targets
 
+def BTC_moving_avgs(start, end, C1, C2):
+	from Algorithms.CryptoMovAvgs1 import init, strat
+	from Simulators.CryptoSim import simulate
+	timestep = '1m'
+	positions = {'BTC': .01, C1 : 0}
+	con = simulate(init, strat, start, end, timestep, positions, C1, C2, verbose = False)
+	return con
 
 def Test_Daily_Strategy(tickers, start, end, strat):
 	'''
@@ -54,10 +60,10 @@ def Test_Daily_Strategy(tickers, start, end, strat):
 		
 
 if __name__ == "__main__":
-	
-	p = Test_Daily_Strategy(['OCN', 'TOPS', 'EXK'], dt(2020,3,3), dt(2020,5,8), moving_avgs1)
 
-
+	con = BTC_moving_avgs(dt(2020, 5, 3), dt(2020, 5,4), 'ETH', 'BTC')
+	print(con)
+	dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
 
 
 

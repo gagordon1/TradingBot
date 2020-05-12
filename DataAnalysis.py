@@ -20,7 +20,7 @@ class DataAnalysis:
 		df.set_index('Timestamp', inplace = True)
 		return df
 
-	def plot_dictionary(self, graph_data, buys = None, sells = None):
+	def plot_sim_graph_data(self, graph_data, buys = None, sells = None):
 		'''
 		given a dictionary mapping index names to dictionaries containing value and time fields
 		mapped to timeseries data as a list
@@ -38,7 +38,7 @@ class DataAnalysis:
 		    style.use('dark_background')
 
 		    plt.xticks(ticks = [i for i in range(0, time_frame, time_frame//15)], 
-		            labels = [HF.get_ny_datetime_string(times[i]) 
+		            labels = [HF.get_datetime_string(times[i]) 
 		            for i in range(0,time_frame,time_frame//15)],
 		              rotation = 75)
 		    for var in graph:
@@ -59,16 +59,19 @@ class DataAnalysis:
 
 	def plot(self, symbol, start, end, interval, DB):
 		'''
-		Given a symbol, start and end date, plots the data over each day in the given window
+		Given a symbol, start and end date, plots the data over each time in the given window
 		Specify a database as a class.
 		'''
 		style.use('dark_background')
 		dB = DB()
 		s = HF.get_string_day_from_datetime(start)
 		e = HF.get_string_day_from_datetime(end)
-		data = dB.get_single_historical_timeseries(symbol, s, e, interval)
+		data = dB.get_historical_timeseries([symbol], s, e, interval)[symbol]
 		df = self.convert_OHLC_to_pandas(data)
-		plt.plot(df['Close'])
+		for time in df['Open']:
+			if time < 8000:
+				print(time)
+		plt.plot(df['High'])
 		plt.show()
 
 

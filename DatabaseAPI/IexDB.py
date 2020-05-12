@@ -1,9 +1,9 @@
-from quadInvesting import Alpacainfo
+import APIinfo.AlpacaInfo as ALPACA
 import requests
 import json
 import numpy as np
 from datetime import date, timedelta, datetime as dt
-from quadInvesting import HelperFunctions as HF
+import HelperFunctions as HF
 
 class IexDB:
 			
@@ -21,7 +21,7 @@ class IexDB:
 		'15m': '15Min',
 		'1d': '1D'
 		}
-		url = Alpacainfo.IEX_API_ENDPOINT + '/bars/{}'.format(span_conversion[interval])
+		url = ALPACA.IEX_API_ENDPOINT + '/bars/{}'.format(span_conversion[interval])
 		payload = {'start': HF.get_iso_format(start), 'end': HF.get_iso_format(end), 
 		'symbols': HF.get_comma_separated_string(tickers), 'limit': 1000}
 		headers = {'APCA-API-KEY-ID': Alpacainfo.API_KEY_ID, 'APCA-API-SECRET-KEY': Alpacainfo.API_SECRET_KEY}

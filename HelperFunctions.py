@@ -39,18 +39,17 @@ def get_weekdays(start_dt, end_dt):
 	        days.append(dt)
 	return days
 
-def valid_minute(datetime, exchange):
+def valid_US_stock_minute(datetime):
 	'''
 	given a datetime object and valid exchange, return if the time is in trading hours
 	'''
-	if exchange == 'NYSE':
-		ny_time = get_ny_datetime(datetime)
-		eastern = pytz.timezone('US/Eastern')
-		if ny_time.weekday() not in {5,6}:
-			open_ = time(9,30, tzinfo = eastern)
-			close = time(16, tzinfo = eastern)
-			if ny_time.time() >= open_ and ny_time.time() < close:
-				return True
+	ny_time = get_ny_datetime(datetime)
+	eastern = pytz.timezone('US/Eastern')
+	if ny_time.weekday() not in {5,6}:
+		open_ = time(9,30, tzinfo = eastern)
+		close = time(16, tzinfo = eastern)
+		if ny_time.time() >= open_ and ny_time.time() < close:
+			return True
 	return False
 
 def get_ny_datetime_string(datetime):
@@ -61,6 +60,10 @@ def get_ny_datetime_string(datetime):
     ny_dt = datetime.astimezone(eastern)
     fmt = '%Y-%m-%d  %H:%M'
     return ny_dt.strftime(fmt)
+
+def get_datetime_string(datetime):
+	fmt = '%Y-%m-%d  %H:%M'
+	return datetime.strftime(fmt)
 
 def get_ny_datetime(datetime):
     '''

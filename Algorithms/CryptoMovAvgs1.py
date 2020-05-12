@@ -1,19 +1,21 @@
-from Simulators.StockSim import context
+from Simulators.CryptoSim import context
 from MagicDB import MagicDB
-from DatabaseAPI.IexDB import IexDB as iDB
-from DatabaseAPI.PolygonDB import PolygonDB as pDB
+from DatabaseAPI.BinanceDB import BinanceDB as bDB
 from DataAnalysis import DataAnalysis as DA
 from datetime import datetime as dt
+import HelperFunctions as HF
 
-def init(context, end_date, symbol):
+def init(context, end_date, C1, C2):
 	'''
 	Stores initial values for each relevant variable
 	'''
-	mDB = MagicDB(context.timestep, context.time, end_date, pDB())
-	context.database = mDB
+	symbol = C1 + C2
+	context.database = MagicDB(context.timestep, context.time, end_date, bDB())
 	first_50 = []
+	timestep = HF.get_timestep_as_timedelta('1m')
 	for i in range(50):
-		price = context.advance_to_valid_price(symbol)
+		price = context.get_historical_open_rate(symbol, context.time)
+		context.step(timestep)
 		first_50.append(price)
 
 	first_20 = first_50[30:]
@@ -24,23 +26,27 @@ def init(context, end_date, symbol):
 	context.variables[symbol + ' MA1'] = sum(first_20)/20
 	context.variables[symbol + ' MA2'] = sum(first_50)/50
 	context.variables[symbol] = price
-	context.positions[symbol] = 0
 	context.graphs = [(symbol, symbol + ' MA1', symbol + ' MA2')]
 
 
-def strat(context, symbol):
+def strat(context, C1, C2):
+	symbol = C1 + C2
 	price = context.database.get_value(symbol, context.time, "Open")
 	if type(price) != str:
 		first_20 = context.variables[symbol + ' 20']
 		first_50 = context.variables[symbol + ' 50']
 		MA1 = context.variables[symbol + ' MA1']
 		MA2 = context.variables[symbol + ' MA2']
+		C1amount = context.positions[C1]
+		C2amount = context.positions[C2]
+		
+		if MA2 > MA1*1.002:
+			# BUY
+			context.exchange(C1, C2, .1*C1amount)
 
-		if MA2 > MA1*1.001 and context.cash > price:
-			context.buy_position(symbol, 1)
-
-		elif MA1 > MA2*1.001 and context.positions[symbol] > 0:
-			context.sell_position(symbol,1)
+		elif MA1 > MA2*1.002:
+			#SELL
+			context.exchange(C1, C2, -.1*C1amount)
 
 		first_20 = first_20[1:] + [price]
 		first_50 = first_50[1:] + [price]
@@ -49,4 +55,3 @@ def strat(context, symbol):
 		context.variables[symbol + ' 20'] = first_20
 		context.variables[symbol + ' 50'] = first_50
 		context.variables[symbol] = price
-

@@ -1,6 +1,6 @@
 
 class DbInterface:
-	def get_historical_timeseries(self, ticker, start, end, interval):
+	def get_historical_timeseries(self, tickers, start, end, interval):
 		'''
 		given a list of string tickers, start and end dates as strings of the form "yyyy-mm-dd", 
 		and an interval as a string of any of (1m,5m,15m,1d), returns timeseries data for the ticker as 
@@ -9,7 +9,7 @@ class DbInterface:
 		'v': volume.
 		'''
 		pass
-	def get_recent_timeseries(self, ticker, period, interval):
+	def get_recent_timeseries(self, tickers, period, interval):
 		'''
 		given a list of string tickers,period as string of any of (1d,5d,1mo,3mo,6mo,1y,2y,5y,10y), 
 		and an interval as a string of any of (1m,5m,15m,1d), returns timeseries data for the ticker as 

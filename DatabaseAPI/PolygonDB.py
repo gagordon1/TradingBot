@@ -1,4 +1,4 @@
-import Alpacainfo
+import APIinfo.AlpacaInfo as ALPACA
 import requests
 import json
 import HelperFunctions as HF
@@ -57,9 +57,9 @@ class PolygonDB:
 		}
 		multiplier = span_conversion[interval][0]
 		timespan = span_conversion[interval][1]
-		url = Alpacainfo.POLYGON_API_ENDPOINT + 'aggs/ticker/{}/range/{}/{}/{}/{}'.format(ticker, 
+		url = ALPACA.POLYGON_API_ENDPOINT + 'aggs/ticker/{}/range/{}/{}/{}/{}'.format(ticker, 
 			multiplier, timespan, start, end)
-		payload = {'apiKey': Alpacainfo.API_KEY_ID}
+		payload = {'apiKey': ALPACA.API_KEY_ID}
 		response = requests.get(url, params = payload)
 		data = json.loads(response.text)
 		final = data['results']
@@ -84,8 +84,8 @@ class PolygonDB:
 		Snapshot allows you to see all tickers current minute aggregate, daily aggregate and last 
 		trade as well as previous days aggregate and calculated change for today.
 		'''
-		url = Alpacainfo.POLYGON_API_ENDPOINT + 'snapshot/locale/us/markets/stocks/tickers'
-		payload = {'apiKey': Alpacainfo.API_KEY_ID}
+		url = ALPACA.POLYGON_API_ENDPOINT + 'snapshot/locale/us/markets/stocks/tickers'
+		payload = {'apiKey': ALPACA.API_KEY_ID}
 		response = requests.get(url, params = payload)
 		data = json.loads(response.text)
 		return data['tickers']

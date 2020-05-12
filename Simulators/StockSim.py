@@ -123,18 +123,16 @@ class context:
         '''
         return self.database.get_value(ticker, time, "Volume")
 
-    def step(self, time_step, market):
+    def step(self, time_step):
         '''
-        given timedelta object time_step and valid market, advances the state's time
+        given timedelta object time_step advances the state's time
         '''
-        if market == 'Default':
+        if HF.valid_US_stock_minute(self.time):
             self.time += time_step
-        elif market == 'NYSE':
-            if HF.valid_minute(self.time, market):
+        else:
+            while not HF.valid_US_stock_minute(self.time):
                 self.time += time_step
-            else:
-                while not HF.valid_minute(self.time, market):
-                    self.time += time_step
+    
     def get_ny_datetime_string(self):
         '''
         get current NY time as string of form "%Y-%m-%d %H:%M:%S"
@@ -161,7 +159,7 @@ class context:
         for graph in self.graph_data:
             for v in graph:
                 graph[v]["Value"].append(self.variables[v])
-                graph[v]["Timestamp"].append(self.time)
+                graph[v]["Timestamp"].append(self.get_ny_datetime())
 
     def initialize_graph(self):
         '''
@@ -173,12 +171,11 @@ class context:
             graph = {}
             for var in self.graphs[i]:
                 graph[var] = {"Value": [self.variables[var]],
-                        "Timestamp": [self.time]}
+                        "Timestamp": [self.get_ny_datetime()]}
             self.graph_data.append(graph)
                 
 
-def simulate(initialize, strategy, start_date, end_date, time_step, 
-    budget, verbose = False, positions = {}, market = 'Default', symbol = None):
+def simulate(initialize, strategy, start_date, end_date, time_step, budget, verbose = False, symbol = None):
     '''
     Advances a strategy between two datetimes start_date and end_date
     strategy - function that given a context, updates it to the next state
@@ -187,6 +184,7 @@ def simulate(initialize, strategy, start_date, end_date, time_step,
     context - object that gives represents an envrionment for a strategy to make decisions
     upon
     '''
+    positions = {}
     start_date = pytz.utc.localize(start_date)
     end_date = pytz.utc.localize(end_date)
     con = context(budget, start_date, time_step, positions, verbose = verbose)
@@ -196,7 +194,7 @@ def simulate(initialize, strategy, start_date, end_date, time_step,
     timestep = HF.get_timestep_as_timedelta(time_step)
     while con.time <= end_date:
         strategy(con, symbol)                                        #updates the specified variables
-        con.step(timestep, market)
+        con.step(timestep)
         con.update_chart_data()
     return con
 
