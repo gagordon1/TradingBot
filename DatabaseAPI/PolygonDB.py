@@ -57,6 +57,8 @@ class PolygonDB:
 		}
 		multiplier = span_conversion[interval][0]
 		timespan = span_conversion[interval][1]
+		start = HF.get_string_day_from_datetime(start)
+		end = HF.get_string_day_from_datetime(end)
 		url = ALPACA.POLYGON_API_ENDPOINT + 'aggs/ticker/{}/range/{}/{}/{}/{}'.format(ticker, 
 			multiplier, timespan, start, end)
 		payload = {'apiKey': ALPACA.API_KEY_ID}

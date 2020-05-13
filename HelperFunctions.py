@@ -1,5 +1,16 @@
 from datetime import date, time, timedelta, datetime as dt
 import pytz
+from random import randrange
+def random_date(start, end):
+    """
+    This function will return a random datetime between two datetime 
+    objects.
+    """
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    random_second = randrange(int_delta)
+    datet = start + timedelta(seconds=random_second)
+    return dt(datet.year, datet.month, datet.day)
 
 def subtract_period(date_, period):
 	'''
@@ -90,7 +101,7 @@ def get_iso_format_from_datetime(datetime_):
 	given date in the form "yyyy-mm-dd", return ISO 8601 format (ex. '2019-04-15T09:30:00-04:00)
 	'''
 	
-	ret =  datetime_.strftime('%Y-%m-%dT%H:%M:00+00:00')
+	ret =  datetime_.strftime('%Y-%m-%dT00:00-00:00')
 	return ret
 
 def get_utc_from_timestamp(timestamp):

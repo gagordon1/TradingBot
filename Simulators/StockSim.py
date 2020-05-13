@@ -160,7 +160,6 @@ class context:
             for v in graph:
                 graph[v]["Value"].append(self.variables[v])
                 graph[v]["Timestamp"].append(self.get_ny_datetime())
-
     def initialize_graph(self):
         '''
         In an init function, each graph will be specified by the variables associated with it in
@@ -192,7 +191,9 @@ def simulate(initialize, strategy, start_date, end_date, time_step, budget, verb
     initialize(con, end_date, symbol)                                #gets initial variables their values
     con.initialize_graph()                                   #sets up each graph according to the "to_graph" attribute specified in initialize
     timestep = HF.get_timestep_as_timedelta(time_step)
+    print(con.time)
     while con.time <= end_date:
+        print(con.time)
         strategy(con, symbol)                                        #updates the specified variables
         con.step(timestep)
         con.update_chart_data()

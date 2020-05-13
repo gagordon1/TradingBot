@@ -39,11 +39,13 @@ def strat(context, C1, C2):
 		MA2 = context.variables[symbol + ' MA2']
 		C1amount = context.positions[C1]
 		C2amount = context.positions[C2]
-		if MA2 > MA1*1.001 and C2amount - .001 >0:
+		
+
+		if MA2 > MA1*1.002 and C2amount - .001 >0:
 			# BUY
 			context.buy(C1, C2, .001)
 
-		elif MA1 > MA2*1.001 and C1amount - .001/price >0:
+		elif MA1 > MA2*1.002 and C1amount - .001/price >0:
 			#SELL
 			context.sell(C1, C2, .001/price)
 

@@ -1,7 +1,7 @@
-import pandas as pd
 import HelperFunctions as HF
 import matplotlib.pyplot as plt
 from matplotlib import style
+import pandas as pd
 
 class DataAnalysis:
 	def convert_OHLC_to_pandas(self, data_list):
