@@ -25,32 +25,40 @@ class context:
         self.graph_data = []
         self.verbose = verbose
     def __str__(self):
-        stri = 'Time: ' + HF.get_datetime_string(self.time) + ' Positions: ' + str(self.positions)
-        return stri
-    #ORDER FUNCTIONS
-    def exchange(self, C1, C2, quantity):
-        '''
-        Given two symbols, C1, C2, exchange quantity amount of C1 for its 
-        value in C2. Subtracts quantity from C1's position and
-        adds quantity*exchange_rate amount of C2 to C2's position
-        '''
-        symbol = C1+C2
-        exchange_rate = self.get_historical_open_rate(symbol, self.time)
-        self.add_value(C1, -quantity)
-        self.add_value(C2, quantity*exchange_rate)
-        if quantity > 0:
-            #bought C2
-            if symbol in self.buys:
-                self.buys[symbol].append(self.time)
-            else:
-                self.buys[symbol] = [self.time]
-        else:
-            #selling C2 for C1
-            if symbol in self.sells:
-                self.sells[symbol].append(self.time)
-            else:
-                self.sells[symbol] = [self.time]
+        stri = 'Time: ' + HF.get_datetime_string(self.time) + ' Positions: ' + str(self.positions) + '\n'
+        total = 'Total Value: ' + str(self.get_BTC_value())
+        return stri + total
 
+    def get_BTC_value(self):
+        total = 0
+        for position in self.positions:
+            if position != 'BTC':
+                BTCval = self.positions[position]*(self.get_historical_open_rate(
+                    '{}BTC'.format(position),self.time))
+                total += BTCval
+            else:
+                total += self.positions['BTC']
+        return total
+
+    #ORDER FUNCTIONS
+    def buy(self, C1, C2, quantity):
+        '''
+        buys an amount of C1 given quantity amount of base currency C2
+        '''
+
+        rate = self.get_historical_open_rate(C1+C2, self.time) #C2/C1
+        self.add_value(C2, -quantity)
+        self.add_value(C1, quantity/rate)
+        self.buys[C1+C2].append(self.time)
+
+    def sell(self,C1,C2,quantity):
+        '''
+        buys an amount of the base currency C2 with quantity amount of currency C1
+        '''
+        rate = self.get_historical_open_rate(C1+C2, self.time) #C1/C2
+        self.add_value(C2, quantity*rate)
+        self.add_value(C1, -quantity)
+        self.sells[C1+C2].append(self.time)
 
 
     def add_value(self, currency, amount):
@@ -64,7 +72,8 @@ class context:
         for a given ticker and datetime object, gets the value of the ticker's open price
          at that time
         '''
-        return self.database.get_value(ticker, time, "Open")
+        return self.database.get_value(ticker, time, "Open") #C1/C2
+        
 
     def get_current_volume(self, ticker):
         '''
@@ -125,8 +134,7 @@ def simulate(initialize, strategy, start_date, end_date, time_step, positions, C
     initialize(con, end_date, C1, C2)                                #gets initial variables their values
     con.initialize_graph()                                   #sets up each graph according to the "to_graph" attribute specified in initialize
     timestep = HF.get_timestep_as_timedelta(time_step)
-    while con.time <= end_date:
-        print(con)
+    while con.time < end_date:
         strategy(con, C1, C2)                                        #updates the specified variables
         con.step(timestep)
         con.update_chart_data()

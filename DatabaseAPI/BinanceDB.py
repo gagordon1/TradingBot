@@ -7,15 +7,14 @@ import HelperFunctions as HF
 class BinanceDB:
 	def get_historical_timeseries(self, tickers, start, end, interval):
 		'''
-		given a list of string tickers, start and end dates as strings of the form "yyyy-mm-dd", 
+		given a list of string tickers, start and end dates as datetime objects, 
 		and an interval as a string of any of (1m,5m,15m,1d), returns timeseries data for the ticker as 
 		a dictionary mapping string tickers to a list of interval dictionaries with fields
 		't': time (seconds), 'o': open price, 'h': high price,'l': low price,'c': close price, and 
 		'v': volume.
 		'''
-		
-		start = int(HF.get_as_datetime(start).timestamp()*1000)
-		end = int(HF.get_as_datetime(end).timestamp()*1000)
+		start = int(start.timestamp()*1000)
+		end = int(end.timestamp()*1000)
 		final = {}
 		for ticker in tickers:
 			payload = {"symbol": ticker, "limit": 1000, "interval": interval, "startTime": start, "endTime": end}

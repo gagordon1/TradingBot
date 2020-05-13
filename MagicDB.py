@@ -24,14 +24,12 @@ class MagicDB:
 		self.price_vectors = {} #NOT IMPLEMENTED
 		self.DB = database
 
-	def track_historical_stock_ticker(self, symbol, start_date, end_date):
+	def track_historical_stock_ticker(self, symbol, start, end):
 		'''
 		adds a stock to the timseries cache from after a specified start date
 		as a string to an end date as a string
 		'''
-		start_date = HF.get_string_day_from_datetime(start_date)
-		end_date = HF.get_string_day_from_datetime(end_date)
-		data = self.DB.get_historical_timeseries([symbol], start_date, end_date, self.timestep)
+		data = self.DB.get_historical_timeseries([symbol], start, end, self.timestep)
 		data_list = data[symbol]
 		final = []
 		for info in data_list:
@@ -43,7 +41,6 @@ class MagicDB:
 		df.set_index('Timestamp', inplace = True)
 		self.timeseries[symbol] = df
 
-
 	def get_value(self, symbol, time, type_):
 		'''
 		returns the value of a ticker given a datetime and string of the ticker
@@ -53,8 +50,14 @@ class MagicDB:
 			self.track_historical_stock_ticker(symbol, self.start_date, self.end_date)
 		if time in self.timeseries[symbol].index:
 			return self.timeseries[symbol].at[time, type_]
-		else:
-			return '{} data for symbol {} at time {} UTC N/A'.format(type_, symbol, time)
+
+		elif time > self.timeseries[symbol].index[-1]:
+			start = self.timeseries[symbol].index[-1]
+			self.track_historical_stock_ticker(symbol, start, self.end_date)
+			if time in self.timeseries[symbol].index:
+				return self.timeseries[symbol].at[time, type_]
+		return '{} data for symbol {} at time {} UTC N/A'.format(type_, symbol, time)
+
 			
 
 	def get_most_recent_price(self, symbol, time):

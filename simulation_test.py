@@ -61,7 +61,7 @@ def Test_Daily_Strategy(tickers, start, end, strat):
 
 if __name__ == "__main__":
 
-	con = BTC_moving_avgs(dt(2020, 5, 3), dt(2020, 5,4), 'ETH', 'BTC')
+	con = BTC_moving_avgs(dt(2020, 5, 1), dt(2020, 5,3), 'XMR', 'BTC')
 	print(con)
 	dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
 
