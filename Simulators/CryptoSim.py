@@ -72,20 +72,20 @@ class context:
         for a given ticker and datetime object, gets the value of the ticker's open price
          at that time
         '''
-        return self.database.get_value(ticker, time, "Open") #C1/C2
+        return self.database.get_crypto_value(ticker, time, "Open") #C1/C2
         
 
     def get_current_volume(self, ticker):
         '''
         For a given ticker, gets the current volume based on the simulations time
         '''
-        return self.database.get_value(ticker, self.time, "Volume")
+        return self.database.get_crypto_value(ticker, self.time, "Volume")
 
     def get_historical_volume(self, ticker, time):
         '''
         For a given ticker, gets the volume based on the given datetime object
         '''
-        return self.database.get_value(ticker, time, "Volume")
+        return self.database.get_crypto_value(ticker, time, "Volume")
 
     def step(self, time_step):
         '''

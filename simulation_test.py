@@ -91,21 +91,21 @@ def AVG_PROFIT(strategy):
 	print('Average Profit:', total_profit/80)
 if __name__ == "__main__":
 	
-	# AVG_PROFIT(BTC_moving_avgs)
-	# start = HF.random_date(dt(2020, 3, 3), dt(2020, 5,12))
-	# end = start +timedelta(1)
-	# with open("JSON_Data/HighVolumeMarkets.json", "r") as file:
-	# 	HighVol = json.load(file)
-	# C1 = random.choice(HighVol)
-	# C1 = 'BCH'
-	# con = BTC_moving_avgs(start,end,C1)	
-	# print(con)
+	AVG_PROFIT(BTC_moving_avgs)
+	start = HF.random_date(dt(2020, 3, 3), dt(2020, 5,12))
+	end = start +timedelta(1)
+	with open("JSON_Data/HighVolumeMarkets.json", "r") as file:
+		HighVol = json.load(file)
+	C1 = random.choice(HighVol)
+	C1 = 'BCH'
+	con = BTC_moving_avgs(start,end,C1)	
+	print(con)
 	# dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
 
 
 	# start = HF.random_date(dt(2020, 3, 4), dt(2020, 5,12))
 	# end = start +timedelta(1)
-	C1 = 'OCN'
-	con = moving_avgs1(dt(2020, 5, 11),dt(2020, 5, 12),C1)	
-	print(con)
-	dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
+	# C1 = 'OCN'
+	# con = moving_avgs1(dt(2020, 5, 11),dt(2020, 5, 12),C1)	
+	# print(con)
+	# dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)

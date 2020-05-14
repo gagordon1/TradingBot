@@ -41,6 +41,33 @@ class MagicDB:
 		df.set_index('Timestamp', inplace = True)
 		self.timeseries[symbol] = df
 
+	def track_historical_crypto_ticker(self, symbol, start, end):
+		final = []
+		while start < end:
+			data = self.DB.get_historical_timeseries([symbol], start, end, self.timestep)
+			data_list = data[symbol]
+			for info in data_list:
+				utc_time = self.get_timestamp_as_utc_time(info['t'])
+				new = {'Timestamp': utc_time, 'Open': info['o'], 'High': info['h'], 
+				'Low': info['l'], 'Close': info['c'], 'Volume': info['v']}
+				final.append(new)
+			start = final[-1]['Timestamp'] + HF.get_timestep_as_timedelta(self.timestep)
+		df = pd.DataFrame(final)
+		df.set_index('Timestamp', inplace = True)
+		self.timeseries[symbol] = df
+		
+
+	def get_crypto_value(self, symbol, time, type_):
+		'''
+		returns the value of a ticker given a datetime and string of the ticker
+		valid types: 'Open', 'Low', 'High', 'Close', 'Volume'
+		'''
+		if symbol not in self.timeseries:
+			self.track_historical_crypto_ticker(symbol, self.start_date, self.end_date)
+		if time in self.timeseries[symbol].index:
+			return self.timeseries[symbol].at[time, type_]
+		return '{} data for symbol {} at time {} UTC N/A'.format(type_, symbol, time)
+	
 	def get_value(self, symbol, time, type_):
 		'''
 		returns the value of a ticker given a datetime and string of the ticker
@@ -50,12 +77,6 @@ class MagicDB:
 			self.track_historical_stock_ticker(symbol, self.start_date, self.end_date)
 		if time in self.timeseries[symbol].index:
 			return self.timeseries[symbol].at[time, type_]
-
-		elif time > self.timeseries[symbol].index[-1]:
-			start = self.timeseries[symbol].index[-1]
-			self.track_historical_stock_ticker(symbol, start, self.end_date)
-			if time in self.timeseries[symbol].index:
-				return self.timeseries[symbol].at[time, type_]
 		return '{} data for symbol {} at time {} UTC N/A'.format(type_, symbol, time)
 
 			
