@@ -1,7 +1,7 @@
-import APIinfo.AlpacaInfo as ALPACA
+from GuapBot.APIinfo import AlpacaInfo as ALPACA
+from GuapBot import HelperFunctions as HF
 import requests
 import json
-import HelperFunctions as HF
 import numpy as np
 from datetime import date, timedelta, datetime as dt
 

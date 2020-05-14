@@ -1,8 +1,9 @@
 from GuapBot.APIinfo import BinanceInfo as BINANCE
+from GuapBot import HelperFunctions as HF
 import requests
 import json
 import random
-import HelperFunctions as HF
+
 
 class BinanceDB:
 	def get_historical_timeseries(self, tickers, start, end, interval):

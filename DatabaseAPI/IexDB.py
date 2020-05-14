@@ -1,9 +1,10 @@
-import APIinfo.AlpacaInfo as ALPACA
+from GuapBot.APIinfo import AlpacaInfo as ALPACA
+from GuapBot import HelperFunctions as HF
 import requests
 import json
 import numpy as np
 from datetime import date, timedelta, datetime as dt
-import HelperFunctions as HF
+
 
 class IexDB:
 			
