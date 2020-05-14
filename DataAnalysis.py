@@ -1,4 +1,4 @@
-import HelperFunctions as HF
+import GuapBot.HelperFunctions as HF
 import matplotlib.pyplot as plt
 from matplotlib import style
 import pandas as pd

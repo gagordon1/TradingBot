@@ -1,10 +1,11 @@
+import os,sys
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from DataAnalysis import DataAnalysis as DA
 from datetime import timedelta, datetime as dt
 from DatabaseAPI.PolygonDB import PolygonDB as pDB
 import HelperFunctions as HF
 from Algorithms.CryptoMovAvgs1 import init, strat
 from Simulators.CryptoSim import simulate
-from DataAnalysis import DataAnalysis as DA
 import json
 import random
 dA = DA()

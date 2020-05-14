@@ -5,7 +5,6 @@ import json
 import numpy as np
 from datetime import date, timedelta, datetime as dt
 
-
 class IexDB:
 			
 	def get_historical_timeseries(self, tickers, start, end, interval):
