@@ -1,6 +1,6 @@
 from datetime import date, timedelta, datetime as dt
-from DataAnalysis import DataAnalysis as DA
-import HelperFunctions as HF
+from GuapBot.DataAnalysis import DataAnalysis as DA
+import GuapBot.HelperFunctions as HF
 import pytz
 import pandas as pd
 
