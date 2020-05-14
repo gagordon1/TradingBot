@@ -1,4 +1,4 @@
-import APIinfo.BinanceInfo as BINANCE
+from GuapBot.APIinfo import BinanceInfo as BINANCE
 import requests
 import json
 import random
