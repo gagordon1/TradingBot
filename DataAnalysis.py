@@ -27,6 +27,7 @@ class DataAnalysis:
 		buys - dictionary mapping symbols to times of purchase
 		sells - dictionary mapping symbols to when they were sold
 		'''
+		
 		for graph in graph_data:
 		    time_frame = 0
 		    best_i = None
@@ -35,7 +36,7 @@ class DataAnalysis:
 		            time_frame = len(graph[i]['Value'])
 		            best_i = i
 		    times = graph[best_i]['Timestamp']
-		    style.use('dark_background')
+		    style.use('seaborn')
 
 		    plt.xticks(ticks = [i for i in range(0, time_frame, time_frame//15)], 
 		            labels = [HF.get_datetime_string(times[i]) 
@@ -62,7 +63,7 @@ class DataAnalysis:
 		Given a symbol, start and end date, plots the data over each time in the given window
 		Specify a database as a class.
 		'''
-		style.use('dark_background')
+		style.use('seaborn')
 		dB = DB()
 		s = HF.get_string_day_from_datetime(start)
 		e = HF.get_string_day_from_datetime(end)

@@ -4,10 +4,11 @@ from DataAnalysis import DataAnalysis as DA
 from datetime import timedelta, datetime as dt
 from DatabaseAPI.PolygonDB import PolygonDB as pDB
 import HelperFunctions as HF
-from Algorithms.CryptoMovAvgs1 import init, strat
 from Simulators.CryptoSim import simulate
 import json
 import random
+import torch
+import time
 dA = DA()
 
 
@@ -30,7 +31,7 @@ def snapshot():
 	return targets
 
 def BTC_moving_avgs(start, end, C1):
-	
+	from Algorithms.CryptoMovAvgs1 import init, strat
 	timestep = '1m'
 	positions = {'BTC': .01, C1 : 0}
 	con = simulate(init, strat, start, end, timestep, positions, C1, 'BTC', verbose = False)
@@ -62,51 +63,51 @@ def Test_Daily_Strategy(tickers, start, end, strat):
 	return profits
 
 
-		
-def AVG_PROFIT(strategy):
 	
-	
-	import time
+def Test_NN_Strategy(start, end):
+	'''
+	Samples the NN strategy over some random dates
+	'''
+	from Algorithms.NN1 import init, strat
 	with open("JSON_Data/HighVolumeMarkets.json", "r") as file:
-		HighVol = json.load(file)
-	i=0
-	total_profit = 0
-	while i < 20:
-		start = HF.random_date(dt(2020, 3, 3), dt(2020, 5,12))
-		end = start +timedelta(1)
-		j=0
-		while j < 4:
-			tstart = time.time()
-			C1 = random.choice(HighVol)
-			print('---'*10)
-			print('simulating {}/BTC from {} to {}'.format(C1, start, end))
-			con = strategy(start, end, C1)
-			print(con)
-			profit = con.get_BTC_value() - .01
-			print('Profit:', profit)
-			total_profit += profit
-			tend = time.time()
-			print('time for simulation: {} seconds'.format(tend-tstart))
-			j+=1
-		i+=1
-	print('Average Profit:', total_profit/80)
-if __name__ == "__main__":
-	
-	AVG_PROFIT(BTC_moving_avgs)
-	start = HF.random_date(dt(2020, 3, 3), dt(2020, 5,12))
-	end = start +timedelta(1)
-	with open("JSON_Data/HighVolumeMarkets.json", "r") as file:
-		HighVol = json.load(file)
-	C1 = random.choice(HighVol)
-	C1 = 'BCH'
-	con = BTC_moving_avgs(start,end,C1)	
+		coins = json.load(file)
+	time_step = '1m'
+	initialize = init
+	strategy = strat
+	C2 = "BTC"
+	values = []
+	s = time.time()
+	for i in range(100):
+		C1 = random.choice(coins)
+		start_date = HF.random_date(start, end)
+		end_date = start_date + timedelta(1)
+		positions = {'BTC': .05, C1: 0}
+		con = simulate(initialize, strategy, start_date, end_date, time_step, positions, C1, "BTC", verbose = False)
+		print("Market: {}{} Date: {}".format(C1,C2,start_date))
+		print(con)
+		value = con.get_BTC_value()
+		print('---'*20)
+		values.append(value)
+	e = time.time()
+	avg_value = (sum(values)/100)/.05
+	print("AVG PERCENT RETURN: {}%".format((avg_value - 1)*100))
+	print("TIME FOR TEST: {}".format(e-s))
+	# dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
+def NN_Strategy(start, end, C1):
+	from Algorithms.NN1 import init, strat
+	time_step = '1m'
+	initialize = init
+	strategy = strat
+	positions = {'BTC': .05, C1: 0}
+	con = simulate(initialize, strategy, start, end, time_step, positions, C1, "BTC", verbose = False)
 	print(con)
-	# dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
+	dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
 
 
-	# start = HF.random_date(dt(2020, 3, 4), dt(2020, 5,12))
-	# end = start +timedelta(1)
-	# C1 = 'OCN'
-	# con = moving_avgs1(dt(2020, 5, 11),dt(2020, 5, 12),C1)	
-	# print(con)
-	# dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
+if __name__ == "__main__":
+	Test_NN_Strategy(dt(2020,2,5), dt(2020,5,15))
+	# NN_Strategy(dt(2020,3,8), dt(2020,3,9), "ENJ")
+	
+
+
+	
