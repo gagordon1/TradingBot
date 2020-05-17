@@ -69,9 +69,9 @@ def Test_NN_Strategy(start, end):
 	'''
 	Samples the NN strategy over some random dates
 	'''
-	from Algorithms.NN1 import init, strat
-	# from Algorithms.SigmoidPicker1 import init, strat
-	# from Algorithms.BuyNHold import init,strat
+	from GuapBot.Algorithms.NN1 import init, strat
+	# from GuapBot.Algorithms.SigmoidPicker1 import init, strat
+	# from GuapBot.Algorithms.BuyNHold import init,strat
 	with open("JSON_Data/HighVolumeMarkets.json", "r") as file:
 		coins = json.load(file)
 	time_step = '1m'
