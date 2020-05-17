@@ -1,7 +1,6 @@
-from DatabaseAPI.IexDB import IexDB as iDB
 from datetime import timedelta, datetime as dt
-import HelperFunctions as HF
-from MagicDB import MagicDB as mDB
+import GuapBot.HelperFunctions as HF
+from GuapBot.MagicDB import MagicDB as mDB
 import pytz
 import pandas as pd
 
