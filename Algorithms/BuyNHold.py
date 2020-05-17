@@ -2,7 +2,7 @@ from GuapBot.Simulators.CryptoSim import context
 from GuapBot.MagicDB import MagicDB
 from GuapBot.DatabaseAPI.BinanceDB import BinanceDB as bDB
 from datetime import datetime as dt
-import HelperFunctions as HF
+import GuapBot.HelperFunctions as HF
 
 def init(context, end_date, C1, C2):
 	'''

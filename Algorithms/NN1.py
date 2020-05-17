@@ -2,8 +2,8 @@ from GuapBot.Algorithms.NeuralNets.Nets import load_NN
 from GuapBot.Simulators.CryptoSim import context
 from GuapBot.MagicDB import MagicDB
 from GuapBot.DatabaseAPI.BinanceDB import BinanceDB as bDB
+import GuapBot.HelperFunctions as HF
 from datetime import datetime as dt
-import HelperFunctions as HF
 import numpy as np
 import os,sys
 import torch
