@@ -47,16 +47,19 @@ class context:
 
         rate = self.get_historical_open_rate(C1+C2, self.time) #C2/C1
         self.add_value(C2, -quantity)
+        self.add_value(C2, -quantity*.0005) #FEE
         self.add_value(C1, quantity/rate)
         self.buys[C1+C2].append(self.time)
 
     def sell(self,C1,C2,quantity):
         '''
         buys an amount of the base currency C2 with quantity amount of currency C1
+        NOW accounts for Bittrex fee
         '''
         rate = self.get_historical_open_rate(C1+C2, self.time) #C1/C2
         self.add_value(C2, quantity*rate)
         self.add_value(C1, -quantity)
+        self.add_value(C2, -quantity*rate*.0005) #FEE
         self.sells[C1+C2].append(self.time)
 
 

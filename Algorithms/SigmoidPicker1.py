@@ -31,7 +31,7 @@ def init(context, end_date, C1, C2):
 	context.buys[symbol] = []
 	context.sells[symbol] = []
 	context.variables[symbol] = price
-	context.variables["NN"] = load_NN('GuapBot/Algorithms/NeuralNets/NET4.pth')
+	context.variables["NN"] = load_NN('Algorithms/NeuralNets/NET4.pth')
 	context.graphs = [(symbol,)]
 
 
