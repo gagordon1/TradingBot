@@ -54,7 +54,7 @@ def init(context, end_date, C1, C2):
 	context.variables['VMA40'] = sum(V40)/40
 	context.variables['VMA50'] = sum(first_50V)/50
 	context.variables[symbol] = price
-	context.variables["NN"] = load_NN('Algorithms/NeuralNets/NET2.pth')
+	context.variables["NN"] = load_NN('GuapBot/Algorithms/NeuralNets/NET2.pth')
 	context.graphs = [(symbol,'PMA10', 'PMA50')]
 
 
