@@ -82,9 +82,9 @@ def strat(context, C1, C2):
 		selection = pred.max(0)[1].item()
 		
 
-		if selection == 0 and pred[0].item() > .9999 and context.positions[C1] >0:
+		if selection == 0 and pred[0].item() > .999999 and context.positions[C1] >0:
 			context.sell(C1,C2, .3*context.positions[C1])
-		elif selection == 2 and pred[2].item() > .9999 and context.positions[C2] >0:
+		elif selection == 2 and pred[2].item() > .9988 and context.positions[C2] >0:
 			context.buy(C1,C2, .3*context.positions[C2])
 
 		for num in ['10', '20', '30', '40', '50']:

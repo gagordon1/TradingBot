@@ -1,10 +1,12 @@
 import os,sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from DataAnalysis import DataAnalysis as DA
+from GuapBot.DataAnalysis import DataAnalysis as DA
+from GuapBot.DatabaseAPI.PolygonDB import PolygonDB as pDB
+import GuapBot.HelperFunctions as HF
+from GuapBot.Simulators.CryptoSim import simulate
+from matplotlib import style, pyplot as plt
 from datetime import timedelta, datetime as dt
-from DatabaseAPI.PolygonDB import PolygonDB as pDB
-import HelperFunctions as HF
-from Simulators.CryptoSim import simulate
+import numpy as np
 import json
 import random
 import torch
@@ -63,12 +65,13 @@ def Test_Daily_Strategy(tickers, start, end, strat):
 	return profits
 
 
-	
 def Test_NN_Strategy(start, end):
 	'''
 	Samples the NN strategy over some random dates
 	'''
 	from Algorithms.NN1 import init, strat
+	# from Algorithms.SigmoidPicker1 import init, strat
+	# from Algorithms.BuyNHold import init,strat
 	with open("JSON_Data/HighVolumeMarkets.json", "r") as file:
 		coins = json.load(file)
 	time_step = '1m'
@@ -89,24 +92,36 @@ def Test_NN_Strategy(start, end):
 		print('---'*20)
 		values.append(value)
 	e = time.time()
+
 	avg_value = (sum(values)/100)/.05
 	print("AVG PERCENT RETURN: {}%".format((avg_value - 1)*100))
 	print("TIME FOR TEST: {}".format(e-s))
 	# dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
+	v = np.array(values)
+	v = (v/.05 - 1)*100
+	style.use("seaborn")
+	plt.title("Percent Returns Over 100 Trials")
+	plt.hist(v, bins = 15)
+	plt.show()
+
 def NN_Strategy(start, end, C1):
-	from Algorithms.NN1 import init, strat
+	# from Algorithms.NN1 import init, strat
+	# from Algorithms.SigmoidPicker1 import init,strat
+	# from Algorithms.BuyNHold import init, strat
 	time_step = '1m'
 	initialize = init
 	strategy = strat
 	positions = {'BTC': .05, C1: 0}
 	con = simulate(initialize, strategy, start, end, time_step, positions, C1, "BTC", verbose = False)
 	print(con)
+	print("Buys:", len(con.buys["{}BTC".format(C1)]))
+	print("Sells:", len(con.sells["{}BTC".format(C1)]))
 	dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
 
 
 if __name__ == "__main__":
 	Test_NN_Strategy(dt(2020,2,5), dt(2020,5,15))
-	# NN_Strategy(dt(2020,3,8), dt(2020,3,9), "ENJ")
+	# NN_Strategy(dt(2020,3,13), dt(2020,3,14), "ADA")
 	
 
 
