@@ -127,11 +127,18 @@ class context:
         '''
         given timedelta object time_step advances the state's time
         '''
-        if HF.valid_US_stock_minute(self.time):
-            self.time += time_step
-        else:
-            while not HF.valid_US_stock_minute(self.time):
+        if time_step == HF.get_timestep_as_timedelta('1m'):
+            if HF.valid_US_stock_minute(self.time):
                 self.time += time_step
+            else:
+                while not HF.valid_US_stock_minute(self.time):
+                    self.time += time_step
+        elif time_step == HF.get_timestep_as_timedelta('1d'):
+            if HF.valid_US_market_day(self.time):
+                self.time += time_step
+            else:
+                while not HF.valid_US_market_day(self.time):
+                    self.time += time_step
     
     def get_ny_datetime_string(self):
         '''
@@ -156,22 +163,36 @@ class context:
         self.to_graph will be added to a dictionary where vars map to dictionaries with value
         and timestamp timeseries
         '''
-        for graph in self.graph_data:
-            for v in graph:
-                graph[v]["Value"].append(self.variables[v])
-                graph[v]["Timestamp"].append(self.get_ny_datetime())
+
+        if self.timestep[-1] == "m":
+            for graph in self.graph_data:
+                for v in graph:
+                    graph[v]["Value"].append(self.variables[v])
+                    graph[v]["Timestamp"].append(self.get_ny_datetime())
+        elif self.timestep[-1] == "d":
+            for graph in self.graph_data:
+                for v in graph:
+                    graph[v]["Value"].append(self.variables[v])
+                    graph[v]["Timestamp"].append(self.time)
     def initialize_graph(self):
         '''
         In an init function, each graph will be specified by the variables associated with it in
         self.graphs as a list of tuples. This fuction initializes the graph_data attribute
         '''
-
-        for i in range(len(self.graphs)):
-            graph = {}
-            for var in self.graphs[i]:
-                graph[var] = {"Value": [self.variables[var]],
-                        "Timestamp": [self.get_ny_datetime()]}
-            self.graph_data.append(graph)
+        if self.timestep[-1] == "m":
+            for i in range(len(self.graphs)):
+                graph = {}
+                for var in self.graphs[i]:
+                    graph[var] = {"Value": [self.variables[var]],
+                            "Timestamp": [self.get_ny_datetime()]}
+                self.graph_data.append(graph)
+        elif self.timestep[-1] == "d":
+            for i in range(len(self.graphs)):
+                graph = {}
+                for var in self.graphs[i]:
+                    graph[var] = {"Value": [self.variables[var]],
+                            "Timestamp": [self.time]}
+                self.graph_data.append(graph)
                 
 
 def simulate(initialize, strategy, start_date, end_date, time_step, budget, verbose = False, symbol = None):
@@ -187,16 +208,13 @@ def simulate(initialize, strategy, start_date, end_date, time_step, budget, verb
     start_date = pytz.utc.localize(start_date)
     end_date = pytz.utc.localize(end_date)
     con = context(budget, start_date, time_step, positions, verbose = verbose)
-
     initialize(con, end_date, symbol)                                #gets initial variables their values
     con.initialize_graph()                                   #sets up each graph according to the "to_graph" attribute specified in initialize
     timestep = HF.get_timestep_as_timedelta(time_step)
-    print(con.time)
     while con.time <= end_date:
-        print(con.time)
         strategy(con, symbol)                                        #updates the specified variables
-        con.step(timestep)
         con.update_chart_data()
+        con.step(timestep)
     return con
 
 

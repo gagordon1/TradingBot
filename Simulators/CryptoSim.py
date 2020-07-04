@@ -47,7 +47,7 @@ class context:
 
         rate = self.get_historical_open_rate(C1+C2, self.time) #C2/C1
         self.add_value(C2, -quantity)
-        self.add_value(C2, -quantity*.0005) #FEE
+        self.add_value(C2, -quantity*.00075) #FEE
         self.add_value(C1, quantity/rate)
         self.buys[C1+C2].append(self.time)
 
@@ -59,7 +59,7 @@ class context:
         rate = self.get_historical_open_rate(C1+C2, self.time) #C1/C2
         self.add_value(C2, quantity*rate)
         self.add_value(C1, -quantity)
-        self.add_value(C2, -quantity*rate*.0005) #FEE
+        self.add_value(C2, -quantity*rate*.00075) #FEE
         self.sells[C1+C2].append(self.time)
 
 
@@ -138,8 +138,8 @@ def simulate(initialize, strategy, start_date, end_date, time_step, positions, C
     timestep = HF.get_timestep_as_timedelta(time_step)
     while con.time < end_date:
         strategy(con, C1, C2)                                        #updates the specified variables
-        con.step(timestep)
         con.update_chart_data()
+        con.step(timestep)
     return con
 
 

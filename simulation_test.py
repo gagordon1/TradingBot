@@ -70,8 +70,9 @@ def Test_NN_Strategy(start, end):
 	Samples the NN strategy over some random dates
 	'''
 	# from GuapBot.Algorithms.NN1 import init, strat
-	from GuapBot.Algorithms.SigmoidPicker1 import init, strat
+	# from GuapBot.Algorithms.SigmoidPicker1 import init, strat
 	# from GuapBot.Algorithms.BuyNHold import init,strat
+	from GuapBot.Algorithms.NN2 import init, strat
 	with open("JSON_Data/HighVolumeMarkets.json", "r") as file:
 		coins = json.load(file)
 	time_step = '1m'
@@ -85,12 +86,17 @@ def Test_NN_Strategy(start, end):
 		start_date = HF.random_date(start, end)
 		end_date = start_date + timedelta(1)
 		positions = {'BTC': .05, C1: 0}
-		con = simulate(initialize, strategy, start_date, end_date, time_step, positions, C1, "BTC", verbose = False)
 		print("Market: {}{} Date: {}".format(C1,C2,start_date))
-		print(con)
-		value = con.get_BTC_value()
+		try:
+			con = simulate(initialize, strategy, start_date, end_date, 
+				time_step, positions, C1, "BTC", verbose = False)
+			print(con)
+			value = con.get_BTC_value()
+			values.append(value)
+		except:
+			print("DATA ISSUE")
 		print('---'*20)
-		values.append(value)
+
 	e = time.time()
 
 	avg_value = (sum(values)/100)/.05
@@ -106,8 +112,9 @@ def Test_NN_Strategy(start, end):
 
 def NN_Strategy(start, end, C1):
 	# from Algorithms.NN1 import init, strat
-	from Algorithms.SigmoidPicker1 import init,strat
+	# from Algorithms.SigmoidPicker1 import init,strat
 	# from Algorithms.BuyNHold import init, strat
+	from Algorithms.NN2 import init, strat
 	time_step = '1m'
 	initialize = init
 	strategy = strat
@@ -118,11 +125,21 @@ def NN_Strategy(start, end, C1):
 	print("Sells:", len(con.sells["{}BTC".format(C1)]))
 	dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
 
+def mean_reverse(start,end,sym):
+	from Algorithms.reversionstrat1 import init, strat
+	from Simulators.StockSim import context, simulate
+	timestep = '1d'
+	cash = 1000
+	con = simulate(init, strat, start, end, timestep, cash, symbol = sym, verbose = True)
+	return con
 
 if __name__ == "__main__":
-	Test_NN_Strategy(dt(2020,2,5), dt(2020,5,15))
-	# NN_Strategy(dt(2020,3,13), dt(2020,3,14), "ADA")
-	
+	start = dt(2016, 3, 4)
+	end = dt(2020, 7,2)
+	sym = "TWTR"
+	con = mean_reverse(start, end, sym)
+	print(con)
+	dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)
 
 
 	

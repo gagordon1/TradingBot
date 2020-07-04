@@ -63,6 +63,14 @@ def valid_US_stock_minute(datetime):
 			return True
 	return False
 
+def valid_US_market_day(datetime):
+	'''
+	given a datetime object and valid exchange, return if the time is in trading hours
+	'''
+	if datetime.weekday() not in {5,6}:
+		return True
+	return False
+
 def get_ny_datetime_string(datetime):
     '''
     get current NY time as string of form "%Y-%m-%d %H:%M:%S"

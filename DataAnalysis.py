@@ -37,11 +37,10 @@ class DataAnalysis:
 		            best_i = i
 		    times = graph[best_i]['Timestamp']
 		    style.use('seaborn')
-
 		    plt.xticks(ticks = [i for i in range(0, time_frame, time_frame//15)], 
 		            labels = [HF.get_datetime_string(times[i]) 
 		            for i in range(0,time_frame,time_frame//15)],
-		              rotation = 75)
+		              rotation = 30)
 		    for var in graph:
 		        data = graph[var]['Value']
 		        var_times = graph[var]['Timestamp']
@@ -49,6 +48,7 @@ class DataAnalysis:
 		        if buys != None and var in buys:
 		            mark = [times.index(elt) for elt in buys[var]]
 		            plt.plot(x, data, marker = 6, label = var + ' Buys', markevery =mark)
+		          
 		        if sells != None and var in sells:
 		            mark = [times.index(elt) for elt in sells[var]]
 		            plt.plot(x, data, marker = 7, label = var+ ' Sells', markevery =mark)

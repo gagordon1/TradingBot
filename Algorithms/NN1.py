@@ -20,9 +20,9 @@ def init(context, end_date, C1, C2):
 	for i in range(50):
 		price = context.get_historical_open_rate(symbol, context.time)
 		volume = context.get_historical_volume(symbol, context.time)
-		context.step(timestep)
 		first_50.append(price)
 		first_50V.append(volume)
+		context.step(timestep)
 	V10 = first_50V[40:]
 	V20 = first_50V[30:]
 	V30 = first_50V[20:]
