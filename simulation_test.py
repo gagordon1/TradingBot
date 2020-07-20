@@ -136,7 +136,7 @@ def mean_reverse(start,end,sym):
 if __name__ == "__main__":
 	start = dt(2016, 3, 4)
 	end = dt(2020, 7,2)
-	sym = "TWTR"
+	sym = "UAL"
 	con = mean_reverse(start, end, sym)
 	print(con)
 	dA.plot_sim_graph_data(con.graph_data, buys = con.buys, sells = con.sells)

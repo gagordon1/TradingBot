@@ -1,3 +1,4 @@
+from Simulators.StockSim import context
 from MagicDB import MagicDB
 from DatabaseAPI.IexDB import IexDB as iDB
 from DatabaseAPI.PolygonDB import PolygonDB as pDB
@@ -8,7 +9,7 @@ def init(context, end_date, symbol):
 	'''
 	Stores initial values for each relevant variable
 	'''
-	mDB = MagicDB('1d', context.time, end_date, pDB())
+	mDB = MagicDB(context.timestep, context.time, end_date, pDB())
 	context.database = mDB
 	first_50 = []
 	for i in range(50):
