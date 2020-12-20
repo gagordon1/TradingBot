@@ -1,5 +1,5 @@
 import os,sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+sys.path.insert(1, os.path.join(sys.path[0], '..')) 
 from GuapBot.DataAnalysis import DataAnalysis as DA
 from GuapBot.DatabaseAPI.PolygonDB import PolygonDB as pDB
 import GuapBot.HelperFunctions as HF

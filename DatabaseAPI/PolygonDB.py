@@ -1,3 +1,5 @@
+import os,sys
+sys.path.insert(1, os.path.join(sys.path[0], '..')) 
 from GuapBot.APIinfo import AlpacaInfo as ALPACA
 from GuapBot import HelperFunctions as HF
 import requests

@@ -133,6 +133,7 @@ class context:
             else:
                 while not HF.valid_US_stock_minute(self.time):
                     self.time += time_step
+        
         elif time_step == HF.get_timestep_as_timedelta('1d'):
             if HF.valid_US_market_day(self.time):
                 self.time += time_step
